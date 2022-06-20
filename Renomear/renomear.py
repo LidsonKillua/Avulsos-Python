@@ -9,8 +9,6 @@ for name in os.listdir(pasta):
 
     if '.TXT' in name[-4:]:
         newname = name[:-4] + '.txt'
-        newname += '.txt'
-
         os.rename(name, newname)
 
 """
