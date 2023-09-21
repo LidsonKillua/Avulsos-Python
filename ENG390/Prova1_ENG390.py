@@ -1,4 +1,10 @@
 """
+Este código utiliza os dados de produtos, estoque e vendas da loja LAURA SMART
+para gerar dois relatórios, um com as informações de vendas e outro com as
+informações de clientes.
+"""
+
+"""
     QUADRO 1 – Itens comercializados pela LAURA SMART
     Descrição dos Itens Estoque (ud) Preços (R$/ud)
     Kit Arduino Iniciante 317 149,90
@@ -35,16 +41,29 @@ Vendas = [[24, 32, 23, 45, 120, 23],
           [12, 34, 20, 120, 134, 34]]
 
 QtdTotalVendido = [0, 0, 0, 0, 0, 0]
-TotalFaturamento = [0, 0, 0, 0, 0, 0]
+Faturamento = [0, 0, 0, 0, 0, 0]
 
 Clientes = ['UNIOPA', 'UFRT', 'UFVIM', 'UNIMOR', 'UFLAR', 'UFTTI']
+QtdClientes = 6
 Gastos = [0, 0, 0, 0, 0, 0]
 
+# Calcular a quantidade total vendida e o faturamento de cada item  e o gasto de cada cliente
 for i in range(len(Vendas)):
     for j in range(len(Produtos)):
         QtdTotalVendido[j] += Vendas[i][j]
-        TotalFaturamento[j] += Vendas[i][j] * Estoque[1][j]
+        Faturamento[j] += Vendas[i][j] * Estoque[1][j]
         Gastos[i] += Vendas[i][j] * Estoque[1][j]
+
+# Calcula o faturamento total e o maior faturamento
+TotalFaturamento = 0
+MaiorFaturamento = 0
+itemMaiorFaturamento = ''
+for i in range(len(Faturamento)):
+    TotalFaturamento += Faturamento[i]
+
+    if Faturamento[i] > MaiorFaturamento:
+        MaiorFaturamento = Faturamento[i]
+        itemMaiorFaturamento = Produtos[i]
 
 """
 Gerar “Relatório I - Vendas - LOJA LAURA SMART” no formato de tabela para
@@ -55,53 +74,22 @@ a análise dos gestores com as seguintes informações:
 (c) faturamento total na venda de todos os itens; e
 (d) indicação do item que possibilitou maior faturamento.
 """
+linha = '_' * 105
 
-""" Primeira Versão
-print('Relatório I - Vendas - LOJA LAURA SMART')
-for(i, produto) in enumerate(Produtos):
-    print(f'{produto}:')
-    print(f'Quantidade vendida: {QtdTotalVendido[i]}')
-    print(f'Quantidade em estoque: {Estoque[0][i] - QtdTotalVendido[i]}')
-    print(f'Faturamento: R$ {TotalFaturamento[i]:.2f}')
-    print(f'Faturamento total: R$ {sum(TotalFaturamento):.2f}')
-    print(f'Item que possibilitou maior faturamento: {Produtos[TotalFaturamento.index(max(TotalFaturamento))]}')
-    print()
-"""
+print(linha)
+print('{:^80}'.format('Relatório I - Vendas - LOJA LAURA SMART'))
+print(linha)
 
-print('Relatório I - Vendas - LOJA LAURA SMART')
-str = 'Produtos: '
-print(f'{str:25}', end="")
-for produto in Produtos:
-    print(f'{produto:>27}',end="")
+print('{:<27s}{:>10s}{:>15s}{:>15s}{:>15s}{:>20s}'.format("Produtos", "Vendido", "Estoque", 
+                                                          "Faturamento", "Total", "Maior Fat."))
+
+for i in range(len(Produtos)):
+    print('{:<27s}{:>10d}{:>15d}{:>15.2f}{:>15.2f}{:>20s}'.format(Produtos[i], QtdTotalVendido[i], 
+                                                                  Estoque[0][i] - QtdTotalVendido[i], 
+                                                                  Faturamento[i], TotalFaturamento, itemMaiorFaturamento))
+
+print(linha)
 print()
-
-str = 'Quantidade vendida: '
-print(f'{str:25}', end="")
-for(i, produto) in enumerate(Produtos):
-    print(f'{QtdTotalVendido[i]:27}', end="")
-print()
-
-str = 'Quantidade em estoque: '
-print(f'{str:25}', end="")
-for(i, produto) in enumerate(Produtos):
-    print(f'{Estoque[0][i] - QtdTotalVendido[i]:27}', end="")
-print()
-
-str = 'Faturamento: '
-print(f'{str:25}', end="")
-for(i, produto) in enumerate(Produtos):
-    val = 'R$ ' + f'{TotalFaturamento[i]:.2f}'
-    print(f'{val:>27}', end="")
-print()
-
-str = 'Faturamento total: '
-print(f'{str:25}', end="")
-val = 'R$ ' + f'{sum(TotalFaturamento):.2f}'
-print(f'{val:>27}')
-
-str = 'Maior faturamento: '
-print(f'{str:25}', end="")
-print(f'{Produtos[TotalFaturamento.index(max(TotalFaturamento))]:>27}')
 
 """
 Gerar 'Relatório II - Clientes - LOJA LAURA SMART” no formato de tabela
@@ -112,29 +100,38 @@ apresentando as seguintes informações sobre os clientes:
 (d) Indicação do cliente responsável pelo menor gasto.
 """
 
-print('\nRelatório II - Clientes - LOJA LAURA SMART')
-str = 'Clientes: '
-print(f'{str:25}', end="")
-for cliente in Clientes:
-    print(f'{cliente:>27}',end="")
-print()
+# Calcular a média de gastos dos clientes
+GastoTotal = 0
+for i in range(len(Gastos)):
+    GastoTotal += Gastos[i]
 
-str = 'Gastos: '
-print(f'{str:25}', end="")
-for(i, cliente) in enumerate(Clientes):
-    val = 'R$ ' + f'{Gastos[i]:.2f}'
-    print(f'{val:>27}', end="")
-print()
+MediaGastos = GastoTotal / QtdClientes
 
-str = 'Maior gasto: '
-print(f'{str:25}', end="")
-print(f'{Clientes[Gastos.index(max(Gastos))]:>27}')
+# Calcular o maior e menor gasto
+MaiorGasto = 0
+MenorGasto = 0
+ClienteMaiorGasto = ''
+ClienteMenorGasto = ''
+for i in range(len(Gastos)):
+    if Gastos[i] > MaiorGasto:
+        MaiorGasto = Gastos[i]
+        ClienteMaiorGasto = Clientes[i]
 
-str = 'Média de gastos: '
-print(f'{str:25}', end="")
-val = 'R$ ' + f'{sum(Gastos)/len(Gastos):.2f}'
-print(f'{val:>27}')
+    if Gastos[i] < MenorGasto:
+        MenorGasto = Gastos[i]
+        ClienteMenorGasto = Clientes[i]
 
-str = 'Menor gasto: '
-print(f'{str:25}', end="")
-print(f'{Clientes[Gastos.index(min(Gastos))]:>27}')
+linha = '_' * 105
+
+print(linha)
+print('{:^80}'.format('Relatório II - Clientes - LOJA LAURA SMART'))
+print(linha)
+
+
+print('{:<20s}{:>15s}{:>15s}{:>15s}{:>15s}'.format("Clientes", "Gastos", "Maior Gasto", "Média Gastos", "Menor Gasto"))
+
+for i in range(len(Clientes)):
+    print('{:<20s}{:>15.2f}{:>15s}{:>15.2f}{:>15s}'.format(Clientes[i], Gastos[i], ClienteMaiorGasto, 
+                                                           MediaGastos, ClienteMenorGasto))
+
+print(linha)
